@@ -1,0 +1,96 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Sun Nov 26 22:41:57 2023
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x0001a4
+.config_2007_PROYECTO_ENSAMBLADOR.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000d1      
+                            0x002007    0x002007      
+            211 out of 1094 program addresses used, program memory utilization is 19%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ADELANTE   0x000043    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                    ATRAS   0x00005e    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                 COMENZAR   0x000085    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  DERECHA   0x00006b    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  DETENER   0x000050    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                      Fin   0x0000cf    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                IZQUIERDA   0x000078    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                   Inicio   0x000000    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+           Leer_Secuencia   0x0000b4    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+   Leer_Secuencia_Inicial   0x0000b0    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  Limpiar   0x000021    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+             MOV_ADELANTE   0x000045    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                MOV_ATRAS   0x000060    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              MOV_DERECHA   0x00006d    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              MOV_DETENER   0x000052    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            MOV_IZQUIERDA   0x00007a    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+        PULSADOR_ADELANTE   0x00002e    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+        PULSADOR_COMENZAR   0x00003d    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         PULSADOR_DERECHA   0x000037    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         PULSADOR_DETENER   0x000031    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+       PULSADOR_IZQUIERDA   0x00003a    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+      PULSADOR_RETROCEDER   0x000034    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            PULSADOR_STOP   0x000040    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            RETARDO_100ms   0x0000c3    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            RETARDO_200ms   0x0000c1    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+           Regresa_Cuenta   0x0000c8    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         Regresa_Cuenta_2   0x0000c6    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              Retardos_ms   0x0000c5    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+       SECUENCIA_GUARDADA   0x000098    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+      SECUENCIA_INGRESADA   0x0000be    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                    START   0x000027    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                     STOP   0x000093    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   Inicio   0x000000    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  Limpiar   0x000021    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                    START   0x000027    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+        PULSADOR_ADELANTE   0x00002e    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         PULSADOR_DETENER   0x000031    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+      PULSADOR_RETROCEDER   0x000034    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         PULSADOR_DERECHA   0x000037    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+       PULSADOR_IZQUIERDA   0x00003a    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+        PULSADOR_COMENZAR   0x00003d    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            PULSADOR_STOP   0x000040    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                 ADELANTE   0x000043    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+             MOV_ADELANTE   0x000045    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  DETENER   0x000050    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              MOV_DETENER   0x000052    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                    ATRAS   0x00005e    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                MOV_ATRAS   0x000060    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                  DERECHA   0x00006b    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              MOV_DERECHA   0x00006d    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                IZQUIERDA   0x000078    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            MOV_IZQUIERDA   0x00007a    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                 COMENZAR   0x000085    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                     STOP   0x000093    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+       SECUENCIA_GUARDADA   0x000098    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+   Leer_Secuencia_Inicial   0x0000b0    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+           Leer_Secuencia   0x0000b4    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+      SECUENCIA_INGRESADA   0x0000be    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            RETARDO_200ms   0x0000c1    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+            RETARDO_100ms   0x0000c3    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+              Retardos_ms   0x0000c5    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+         Regresa_Cuenta_2   0x0000c6    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+           Regresa_Cuenta   0x0000c8    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+                      Fin   0x0000cf    program     static C:\Users\Usuario\Desktop\IF4000_Proyecto_Ensamblador\Proyecto_Ensamblador.asm
+
+

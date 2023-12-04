@@ -1,0 +1,625 @@
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[205]: Found directive in column 1. (list)
+                      00001 list p=16f84a
+Warning[205]: Found directive in column 1. (include)
+                      00002 include <p16f84.inc>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F84 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+Message[301]: MESSAGE: (Processor-header file mismatch.  Verify selected processor.)
+                      00206         LIST
+                      00003 
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3FF1           00004 __CONFIG _CP_OFF&_WDT_OFF&_PWRTE_ON&_XT_OSC
+                      00005 
+                      00006 ;-------------------------------------------------------------------------------
+                      00007 ;------------ IF4000 - ARQUITECTURA DE COMPUTADORES - PROYECTO -----------------
+                      00008 ;-------------------------------------------------------------------------------
+                      00009 ;Estudiantes:
+                      00010 ;       Alisson Rodríguez Mora - C06679
+                      00011 ;       Jesner Melgara Murillo - C14644
+                      00012 
+                      00013 ;--------------------------------------------------------
+                      00014 ;---- COMBINACIONES DE SALIDAS PARA LAS DIRECCIONES -----
+                      00015 ;--------------------------------------------------------
+                      00016 
+                      00017 ;RB2 y RB3 controlan el giro Motor 1
+                      00018 ;RB4 y RB5 controlan el giro Motor 2
+                      00019 
+                      00020 ; MOTOR1 - MOTOR2 = SALIDA
+                      00021 ; RB0 (0) RB1 (0) RB2 (1) RB3 (0)  -  RB4 (0) RB5 (1) RB6 (0) RB7 (0) = ADELANTE  B'00100100'
+                      00022 ; RB0 (0) RB1 (0) RB2 (0) RB3 (0)  -  RB4 (0) RB5 (0) RB6 (0) RB7 (0) = DETENER   B'00000000'
+                      00023 ; RB0 (0) RB1 (0) RB2 (0) RB3 (1)  -  RB4 (1) RB5 (0) RB6 (0) RB7 (0) = RETROCESO B'00011000'
+                      00024 ; RB0 (0) RB1 (0) RB2 (0) RB3 (0)  -  RB4 (0) RB5 (1) RB6 (0) RB7 (0) = DERECHA   B'00000100'
+                      00025 ; RB0 (0) RB1 (0) RB2 (1) RB3 (0)  -  RB4 (0) RB5 (0) RB6 (0) RB7 (0) = IZQUIERDA B'00100000'
+                      00026 
+                      00027 ;----------- DECLARACIÓN DE VARIABLES -------------------
+                      00028 #define posiciones .50           ; # de posiciones a ocupar en los registros
+                      00029 #define inicial 0x13             ; Primera dirección a almacenar
+                      00030 #define minInstrucciones .40 ; Funciona como el mínimo de instrucciones libres que deben quedar para com
+                            enzar a ejecutar la secuencia (10 instrucciones)
+                      00031 
+  0000000C            00032 CONTADOR equ 0x0C                        ; Cuenta el # de instrucciones guardadas
+  0000000D            00033 NUMERO equ 0x0D                          ; Variable que almacena el número a guardar
+  0000000E            00034 MIN_NUMERO equ 0x0E
+                      00035 
+                      00036 ;------------ GRABACIÓN SECUENCIA MEMORIA ---------------
+  0000000F            00037 BanderaSecGuardada equ 0x0F
+  00000010            00038 BanderaSecIngresada equ 0x10
+                      00039 
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00040 ;--------------- CONTADORES PARA RETARDOS ---------------
+  00000011            00041 Contador equ 0x11
+  00000012            00042 Contador_2 equ 0x12 
+                      00043 
+                      00044 ;--------------------------------------------------------
+                      00045 ;------------ INICIO DEL PROGRAMA PRINCIPAL -------------
+                      00046 ;--------------------------------------------------------
+Warning[205]: Found directive in column 1. (org)
+0000                  00047 org 0x00 ; Posición de memoria de prog. que comienza
+                      00048 
+0000                  00049 Inicio 
+                      00050 ; -------------- CONFIGURACIÓN DE PUERTOS ---------------
+0000   1683           00051         BSF     STATUS,RP0
+0001   0185           00052         clrf PORTA
+0002   3000           00053         movlw b'00000000'
+0003   0085           00054         movwf PORTA
+                      00055 
+0004   0186           00056         clrf PORTB
+0005   3000           00057         MOVLW B'00000000'
+0006   0086           00058         movwf PORTB
+0007   1283           00059         BCF     STATUS,RP0 
+                      00060 
+0008   3000           00061         MOVLW B'00000000'
+0009   0086           00062         MOVWF PORTB
+000A   0085           00063         MOVWF PORTA
+                      00064         
+                      00065 ; -------------- LIMPIEZA DE VARIABLES ------------------
+000B   0103           00066         clrw
+000C   008C           00067         movwf CONTADOR
+000D   008D           00068         movwf NUMERO
+000E   0091           00069         movwf Contador
+000F   0092           00070         movwf Contador_2 
+                      00071 
+                      00072 ;------------------- ESCRITURA DE VARIABLES ------------------- 
+0010   3028           00073         movlw minInstrucciones
+0011   008E           00074         movwf MIN_NUMERO
+                      00075 
+0012   3001           00076         movlw .1                                        ; Significa que no hay 10 instrucciones minimo
+0013   0090           00077         movwf BanderaSecIngresada  
+                      00078 
+0014   3032           00079         movlw posiciones
+0015   008F           00080         movwf BanderaSecGuardada        
+                      00081 
+0016   3032           00082         movlw posiciones
+0017   008C           00083         movwf CONTADOR                          ; Cargo en CONTADOR el numero de posiciones
+0018   3012           00084         movlw inicial-1
+0019   0084           00085         movwf FSR                                       ; puntero = posición anterior a la inicial
+                      00086 
+001A   3000           00087         movlw 0
+001B   2021           00088         call Limpiar
+                      00089 
+001C   3032           00090         movlw posiciones
+001D   008C           00091         movwf CONTADOR
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+001E   3012           00092         movlw inicial-1
+001F   0084           00093         movwf FSR 
+                      00094 
+0020   2027           00095         call START
+                      00096 
+                      00097 ;------------------------ LIMPIAR REGISTROS --------------------
+0021                  00098 Limpiar 
+Message[305]: Using default destination of 1 (file).
+0021   0A84           00099         incf FSR                ; Apunta a la siguiente posición 
+0022   0080           00100         movwf INDF              ; Dato --> INDF
+Message[305]: Using default destination of 1 (file).
+0023   038C           00101         decf CONTADOR   ; Decremento el contador
+0024   1D03           00102         btfss STATUS,Z  ; Si llega a cero salta
+0025   2821           00103         goto Limpiar
+0026   0008           00104         RETURN
+                      00105 
+                      00106 ;------------------------ PULSADORES --------------------
+0027                  00107 START
+                      00108         
+0027   202E           00109         CALL PULSADOR_ADELANTE
+                      00110 
+0028   203D           00111         CALL PULSADOR_COMENZAR
+                      00112         
+0029   2031           00113         CALL PULSADOR_DETENER
+                      00114         
+002A   2034           00115         CALL PULSADOR_RETROCEDER
+                      00116 
+002B   2037           00117         CALL PULSADOR_DERECHA
+                      00118 
+002C   203A           00119         CALL PULSADOR_IZQUIERDA
+                      00120         
+002D   2827           00121         GOTO START
+                      00122 
+002E                  00123 PULSADOR_ADELANTE
+002E   1805           00124         BTFSC PORTA,0 
+002F   2843           00125         GOTO ADELANTE
+0030   0008           00126         RETURN
+                      00127 
+0031                  00128 PULSADOR_DETENER        ; Instrucción detener dentro de la secuencia
+0031   1885           00129         BTFSC PORTA,1
+0032   2850           00130         GOTO DETENER    
+0033   0008           00131         RETURN 
+                      00132 
+0034                  00133 PULSADOR_RETROCEDER
+0034   1905           00134         BTFSC PORTA,2 
+0035   285E           00135         GOTO ATRAS
+0036   0008           00136         RETURN
+                      00137 
+0037                  00138 PULSADOR_DERECHA
+0037   1985           00139         BTFSC PORTA,3 
+0038   286B           00140         GOTO DERECHA
+0039   0008           00141         RETURN
+                      00142 
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+003A                  00143 PULSADOR_IZQUIERDA
+003A   1A05           00144         BTFSC PORTA,4  
+003B   2878           00145         GOTO IZQUIERDA
+003C   0008           00146         RETURN
+                      00147 
+003D                  00148 PULSADOR_COMENZAR
+003D   1886           00149         BTFSC PORTB, 1 
+003E   2885           00150         GOTO COMENZAR
+003F   0008           00151         RETURN
+                      00152 
+0040                  00153 PULSADOR_STOP           ; Detiene la secuencia por completo
+0040   1885           00154         BTFSC PORTA,1
+0041   2893           00155         GOTO STOP
+0042   0008           00156         RETURN
+                      00157 
+                      00158 ; ------------------------------ Manejo de direcciones -------------------------------------------
+0043                  00159 ADELANTE
+0043   1805           00160         BTFSC PORTA,0   ; While hasta que sea 0.
+0044   2843           00161         GOTO ADELANTE
+0045                  00162 MOV_ADELANTE
+0045   3024           00163         MOVLW B'00100100'
+0046   008D           00164         movwf NUMERO    
+Message[305]: Using default destination of 1 (file).
+0047   0A84           00165         incf FSR                ; Apunta a la siguiente posición
+0048   0080           00166         movwf INDF              ; Dato --> INDF decf NUMERO
+0049   080D           00167         movf NUMERO,W   ; W = NUMERO
+Message[305]: Using default destination of 1 (file).
+004A   038C           00168         decf CONTADOR   ; Decremento el contador
+                      00169 
+004B   080C           00170         movf CONTADOR, w                   
+004C   020E           00171         subwf MIN_NUMERO, w
+004D   1903           00172         btfsc STATUS, Z  
+004E   20BE           00173         CALL SECUENCIA_INGRESADA 
+004F   0008           00174         RETURN
+                      00175 
+0050                  00176 DETENER                 
+0050   1885           00177         BTFSC PORTA,1
+0051   2850           00178         GOTO DETENER
+0052                  00179 MOV_DETENER
+0052   0103           00180         CLRW                ;W = 0
+0053   3000           00181         MOVLW B'00000000'
+0054   008D           00182         movwf NUMERO    
+Message[305]: Using default destination of 1 (file).
+0055   0A84           00183         incf FSR                ; Apunta a la siguiente posición
+0056   0080           00184         movwf INDF              ; Dato --> INDF decf NUMERO
+0057   080D           00185         movf NUMERO,W   ; W = NUMERO
+Message[305]: Using default destination of 1 (file).
+0058   038C           00186         decf CONTADOR   ; Decremento el contador
+                      00187 
+0059   080C           00188         movf CONTADOR, w                   
+005A   020E           00189         subwf MIN_NUMERO, w
+005B   1903           00190         btfsc STATUS, Z 
+005C   20BE           00191         CALL SECUENCIA_INGRESADA
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00192 
+005D   0008           00193         RETURN
+                      00194 
+005E                  00195 ATRAS
+005E   1905           00196         BTFSC PORTA,2
+005F   285E           00197         GOTO ATRAS
+0060                  00198 MOV_ATRAS
+0060   3018           00199         movlw B'00011000'
+0061   008D           00200         movwf NUMERO
+Message[305]: Using default destination of 1 (file).
+0062   0A84           00201         incf FSR                ; Apunta a la siguiente posición
+0063   0080           00202         movwf INDF              ; Dato --> INDF decf NUMERO
+0064   080D           00203         movf NUMERO,W   ; W = NUMERO
+Message[305]: Using default destination of 1 (file).
+0065   038C           00204         decf CONTADOR   ; Decremento el contador
+                      00205 
+0066   080C           00206         movf CONTADOR, w                   
+0067   020E           00207         subwf MIN_NUMERO, w
+0068   1903           00208         btfsc STATUS, Z 
+0069   20BE           00209         CALL SECUENCIA_INGRESADA
+                      00210 
+006A   0008           00211         RETURN
+                      00212 
+006B                  00213 DERECHA
+006B   1985           00214         BTFSC PORTA,3
+006C   286B           00215         GOTO DERECHA
+006D                  00216 MOV_DERECHA
+006D   3004           00217         MOVLW B'00000100'
+006E   008D           00218         movwf NUMERO
+Message[305]: Using default destination of 1 (file).
+006F   0A84           00219         incf FSR                ; Apunta a la siguiente posición
+0070   0080           00220         movwf INDF              ; Dato --> INDF decf NUMERO
+0071   080D           00221         movf NUMERO,W   ; W = NUMERO
+Message[305]: Using default destination of 1 (file).
+0072   038C           00222         decf CONTADOR   ; Decremento el contador
+                      00223 
+0073   080C           00224         movf CONTADOR, w                   
+0074   020E           00225         subwf MIN_NUMERO, w
+0075   1903           00226         btfsc STATUS, Z 
+0076   20BE           00227         CALL SECUENCIA_INGRESADA
+                      00228 
+0077   0008           00229         RETURN
+                      00230 
+0078                  00231 IZQUIERDA
+0078   1A05           00232         BTFSC PORTA,4
+0079   2878           00233         GOTO IZQUIERDA
+007A                  00234 MOV_IZQUIERDA
+007A   3020           00235         MOVLW B'00100000'
+007B   008D           00236         movwf NUMERO
+Message[305]: Using default destination of 1 (file).
+007C   0A84           00237         incf FSR                ; Apunta a la siguiente posición
+007D   0080           00238         movwf INDF              ; Dato --> INDF
+007E   080D           00239         movf NUMERO,W   ; W = NUMERO
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[305]: Using default destination of 1 (file).
+007F   038C           00240         decf CONTADOR   ; Decremento el contador
+                      00241 
+0080   080C           00242         movf CONTADOR, w                   
+0081   020E           00243         subwf MIN_NUMERO, w
+0082   1903           00244         btfsc STATUS, Z 
+0083   20BE           00245         CALL SECUENCIA_INGRESADA
+0084   0008           00246         RETURN
+                      00247 
+                      00248 ; ---------------------- COMENZAR Y DETENER ------------------
+0085                  00249 COMENZAR
+0085   1886           00250         BTFSC PORTB,1
+0086   2885           00251         GOTO COMENZAR
+                      00252 
+0087   3040           00253         movlw B'01000000'
+0088   0086           00254         movwf PORTB
+                      00255         
+0089   080C           00256         movf CONTADOR, w                ; Mueve VALOR1 a WREG
+008A   020F           00257     subwf BanderaSecGuardada, w ; Resta VALOR2 de WREG (resultado no afecta VALOR1 ni VALOR2)
+                      00258 
+008B   1903           00259     btfsc STATUS, Z                 ; Verifica si el resultado es uno
+008C   2098           00260     CALL SECUENCIA_GUARDADA  
+                      00261 
+008D   080E           00262         movf MIN_NUMERO, w                 
+008E   0210           00263     subwf BanderaSecIngresada, w
+                      00264 
+008F   1903           00265         btfsc STATUS, Z 
+0090   20B0           00266         CALL Leer_Secuencia_Inicial
+                      00267 
+0091   20CF           00268         CALL Fin
+0092   0008           00269         RETURN
+                      00270 
+0093                  00271 STOP    
+0093   1886           00272         BTFSC PORTB,1
+0094   2893           00273         GOTO STOP
+                      00274 
+0095   3000           00275         movlw B'00000000'
+0096   0086           00276         movwf PORTB     
+0097   2027           00277         CALL START
+                      00278 
+                      00279 ;--------------------- SECUENCIA MEMORIA --------------------
+0098                  00280 SECUENCIA_GUARDADA
+0098   2045           00281         CALL MOV_ADELANTE
+0099   207A           00282         CALL MOV_IZQUIERDA
+009A   2060           00283         CALL MOV_ATRAS
+009B   206D           00284         CALL MOV_DERECHA
+009C   2052           00285         CALL MOV_DETENER
+009D   2045           00286         CALL MOV_ADELANTE
+009E   207A           00287         CALL MOV_IZQUIERDA
+009F   207A           00288         CALL MOV_IZQUIERDA
+00A0   2045           00289         CALL MOV_ADELANTE
+00A1   206D           00290         CALL MOV_DERECHA
+00A2   2045           00291         CALL MOV_ADELANTE
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00A3   2060           00292         CALL MOV_ATRAS
+00A4   206D           00293         CALL MOV_DERECHA
+00A5   207A           00294         CALL MOV_IZQUIERDA
+00A6   2045           00295         CALL MOV_ADELANTE
+00A7   2052           00296         CALL MOV_DETENER
+00A8   206D           00297         CALL MOV_DERECHA
+00A9   2045           00298         CALL MOV_ADELANTE
+00AA   2045           00299         CALL MOV_ADELANTE
+00AB   2060           00300         CALL MOV_ATRAS
+00AC   2045           00301         CALL MOV_ADELANTE
+00AD   2060           00302         CALL MOV_ATRAS
+00AE   20B0           00303         CALL Leer_Secuencia_Inicial 
+00AF   0008           00304         RETURN
+                      00305 
+                      00306 ; --------------- LECTURA DE REGISTROS -------------------------
+00B0                  00307 Leer_Secuencia_Inicial
+00B0   3032           00308         movlw posiciones
+00B1   008C           00309         movwf CONTADOR  ; Cargo en CONTADOR el número de posiciones
+00B2   3012           00310         movlw inicial-1
+00B3   0084           00311         movwf FSR           ; puntero = posición anterior a la inicial
+00B4                  00312 Leer_Secuencia 
+Message[305]: Using default destination of 1 (file).
+00B4   0A84           00313         incf FSR            ; Apunta a la siguiente posición
+00B5   0800           00314         movf INDF, W    ; Lee el valor de la posición apuntada por FSR y lo coloca en W
+                      00315 
+00B6   008D           00316         movwf NUMERO 
+00B7   0086           00317         movwf PORTB
+                      00318 
+00B8   20C1           00319         CALL RETARDO_200ms
+00B9   20C1           00320         CALL RETARDO_200ms
+                      00321 
+Message[305]: Using default destination of 1 (file).
+00BA   038C           00322         decf CONTADOR
+00BB   1903           00323         btfsc STATUS,Z  ; Si es cero, salta 
+00BC   0008           00324         RETURN  
+00BD   28B4           00325         goto Leer_Secuencia
+                      00326 
+                      00327 ;------------------ CAMBIO DE BANDERA ---------------
+                      00328 
+00BE                  00329 SECUENCIA_INGRESADA
+00BE   3028           00330         movlw .40                  
+00BF   0090           00331     movwf BanderaSecIngresada
+00C0   0008           00332         RETURN
+                      00333         
+                      00334 ;------------------------ RETARDOS -------------------
+                      00335 
+00C1                  00336 RETARDO_200ms                   
+00C1   30C8           00337     MOVLW   d'200'              
+00C2   28C5           00338     GOTO    Retardos_ms 
+00C3                  00339 RETARDO_100ms                   
+00C3   3064           00340     MOVLW   d'100'              
+00C4   28C5           00341     GOTO    Retardos_ms 
+                      00342     
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00C5                  00343 Retardos_ms   
+00C5   0092           00344     MOVWF   Contador_2          
+00C6                  00345 Regresa_Cuenta_2
+00C6   30F9           00346     MOVLW   d'249'                               
+00C7   0091           00347     MOVWF   Contador                    
+00C8                  00348 Regresa_Cuenta
+00C8   0000           00349     NOP         
+00C9   2040           00350         CALL PULSADOR_STOP      ; VALIDA QUE SI SE PRESIONA EL PULSADOR DETENER
+00CA   0B91           00351     DECFSZ  Contador,F          
+00CB   28C8           00352     GOTO    Regresa_Cuenta              
+00CC   0B92           00353     DECFSZ  Contador_2,F                
+00CD   28C6           00354     GOTO    Regresa_Cuenta_2    
+00CE   0008           00355     RETURN
+                      00356 
+                      00357 ;------------------------- FIN ----------------------
+00CF                  00358 Fin 
+00CF   3040           00359         movlw B'01000000'
+00D0   0086           00360         movwf PORTB     
+00D1   0008           00361         RETURN
+                      00362 
+Warning[205]: Found directive in column 1. (End)
+                      00363 End 
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADELANTE                          00000043
+ATRAS                             0000005E
+BanderaSecGuardada                0000000F
+BanderaSecIngresada               00000010
+C                                 00000000
+COMENZAR                          00000085
+CONTADOR                          0000000C
+Contador                          00000011
+Contador_2                        00000012
+DC                                00000001
+DERECHA                           0000006B
+DETENER                           00000050
+EEADR                             00000009
+EECON1                            00000088
+EECON2                            00000089
+EEDATA                            00000008
+EEIE                              00000006
+EEIF                              00000004
+F                                 00000001
+FSR                               00000004
+Fin                               000000CF
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+IZQUIERDA                         00000078
+Inicio                            00000000
+Leer_Secuencia                    000000B4
+Leer_Secuencia_Inicial            000000B0
+Limpiar                           00000021
+MIN_NUMERO                        0000000E
+MOV_ADELANTE                      00000045
+MOV_ATRAS                         00000060
+MOV_DERECHA                       0000006D
+MOV_DETENER                       00000052
+MOV_IZQUIERDA                     0000007A
+NOT_PD                            00000003
+NOT_RBPU                          00000007
+NOT_TO                            00000004
+NUMERO                            0000000D
+OPTION_REG                        00000081
+PCL                               00000002
+PCLATH                            0000000A
+PORTA                             00000005
+PORTB                             00000006
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PULSADOR_ADELANTE                 0000002E
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PULSADOR_COMENZAR                 0000003D
+PULSADOR_DERECHA                  00000037
+PULSADOR_DETENER                  00000031
+PULSADOR_IZQUIERDA                0000003A
+PULSADOR_RETROCEDER               00000034
+PULSADOR_STOP                     00000040
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RD                                00000000
+RETARDO_100ms                     000000C3
+RETARDO_200ms                     000000C1
+RP0                               00000005
+RP1                               00000006
+Regresa_Cuenta                    000000C8
+Regresa_Cuenta_2                  000000C6
+Retardos_ms                       000000C5
+SECUENCIA_GUARDADA                00000098
+SECUENCIA_INGRESADA               000000BE
+START                             00000027
+STATUS                            00000003
+STOP                              00000093
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CONFIG                           00002007
+_CP_OFF                           00003FFF
+_CP_ON                            0000000F
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FFD
+__16F84A                          00000001
+inicial                           0x13
+minInstrucciones                  .40
+posiciones                        .50
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XX-------------- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   210
+Program Memory Words Free:   814
+
+
+MPASM  5.51          PROYECTO_ENSAMBLADOR.ASM   11-26-2023  22:41:54         PAGE 12
+
+
+
+
+
+Errors   :     0
+Warnings :     5 reported,     0 suppressed
+Messages :    15 reported,     0 suppressed
+
+
